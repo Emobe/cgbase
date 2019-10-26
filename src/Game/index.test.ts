@@ -10,6 +10,7 @@ class TestTable extends Table {
   }
 }
 
+// tslint:disable-next-line: max-classes-per-file
 class NewGame extends Game<TestTable> {
   constructor() {
     super(TestTable, 2);
@@ -32,17 +33,12 @@ test('Game.add should add player to game', t => {
   t.end();
 });
 
-test('Game should have state `PreDeal` when player count has reached', t => {
+test('Game should deal when player count of 2 has reached', t => {
   const game = new NewGame();
   game.add('test', new Player());
   game.add('ey', new Player());
-
-  const actual = game.State;
-  const expected = GameState.PreDeal;
-  t.deepEqual(actual, expected);
-  t.end();
-});
-
-test('Game should call pre-deal', t => {
-  t.end();
+  game.on('deal', dealer => {
+    t.assert(true);
+    t.end();
+  });
 });

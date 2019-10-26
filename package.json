@@ -1,6 +1,6 @@
 {
   "name": "cgbase",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Base for creating card games",
   "main": "dist/index.js",
   "scripts": {
@@ -30,7 +30,8 @@
     "croupier": "^1.1.0",
     "nanoid": "^2.1.4",
     "rxjs": "^6.5.3",
-    "tsconfig-paths": "^3.9.0"
+    "tsconfig-paths": "^3.9.0",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@types/tape": "^4.2.33",

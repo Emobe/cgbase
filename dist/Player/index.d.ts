@@ -14,4 +14,12 @@ export default class Player {
      * Returns current hand
      */
     readonly Hand: Card[];
+    /**
+     * Returns current ID
+     */
+    readonly ID: string;
+    /**
+     * Returns current name
+     */
+    readonly Name: string;
 }

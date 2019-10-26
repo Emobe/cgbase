@@ -1,13 +1,15 @@
 import Table from '@/Table';
 import GameState from '@/GameState';
 import Player from '@/Player';
+import Debug from '@/Debug';
 import { ObservableDictionary } from '@emobe/ts-collections';
 import { Croupier } from 'croupier';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { EventEmitter } from 'events';
 
 type PlayerCollection = ObservableDictionary<string, Player>;
 
-export default abstract class Game<T extends Table> {
+export default abstract class Game<T extends Table> extends EventEmitter {
   public state$: Observable<GameState>;
 
   private dealer = new Croupier();
@@ -15,22 +17,14 @@ export default abstract class Game<T extends Table> {
   private table: Table;
   private state = new BehaviorSubject<GameState>(GameState.Initialising);
   private startOnCount: number;
+  private logger = Debug;
 
   constructor(table: new () => T, startOn: number) {
+    super();
     this.table = new table();
     this.startOnCount = startOn;
     this.players.items$.subscribe(v => this.userCountCheck());
-    this.state$ = this.state.asObservable();
   }
-
-  private handleStates(state: GameState) {
-    switch (state) {
-      case GameState.Dealing:
-        this.onDealing(state);
-    }
-  }
-
-  private onDealing(state: GameState) {}
 
   public preDeal(cb: (croupier: Croupier) => void) {
     cb(this.dealer);
@@ -62,11 +56,29 @@ export default abstract class Game<T extends Table> {
    */
   private userCountCheck() {
     if (this.players.count() >= this.startOnCount) {
-      this.updateState(GameState.PreDeal);
+      this.emit('deal', this.dealer);
+      this.updateState(GameState.Dealing);
     }
+  }
+
+  private dealCards(amount: number) {
+    this.players.Items.forEach(player => {
+      player.give(this.dealer.take(1));
+    });
   }
 
   private updateState(value: GameState) {
     this.state.next(value);
+  }
+
+  private handleStates(state: GameState) {
+    switch (state) {
+      case GameState.Dealing:
+        this.onDealing(state);
+    }
+  }
+
+  private onDealing(state: GameState) {
+    this.logger.debug('dealing');
   }
 }

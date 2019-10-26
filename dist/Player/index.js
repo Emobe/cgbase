@@ -21,6 +21,18 @@ class Player {
     get Hand() {
         return this.hand;
     }
+    /**
+     * Returns current ID
+     */
+    get ID() {
+        return this.id;
+    }
+    /**
+     * Returns current name
+     */
+    get Name() {
+        return this.name;
+    }
 }
 exports.default = Player;
 //# sourceMappingURL=index.js.map

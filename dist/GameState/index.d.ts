@@ -2,8 +2,9 @@ declare enum GameState {
     Initialising = 0,
     Waiting = 1,
     PreDeal = 2,
-    Playing = 3,
-    Ending = 4,
-    End = 5
+    Dealing = 3,
+    Playing = 4,
+    Ending = 5,
+    End = 6
 }
 export default GameState;

@@ -5,9 +5,10 @@ var GameState;
     GameState[GameState["Initialising"] = 0] = "Initialising";
     GameState[GameState["Waiting"] = 1] = "Waiting";
     GameState[GameState["PreDeal"] = 2] = "PreDeal";
-    GameState[GameState["Playing"] = 3] = "Playing";
-    GameState[GameState["Ending"] = 4] = "Ending";
-    GameState[GameState["End"] = 5] = "End";
+    GameState[GameState["Dealing"] = 3] = "Dealing";
+    GameState[GameState["Playing"] = 4] = "Playing";
+    GameState[GameState["Ending"] = 5] = "Ending";
+    GameState[GameState["End"] = 6] = "End";
 })(GameState || (GameState = {}));
 exports.default = GameState;
 //# sourceMappingURL=index.js.map

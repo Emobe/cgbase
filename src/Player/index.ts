@@ -25,6 +25,10 @@ export default class Player {
     return this.hand;
   }
 
+  public give(card: Card) {
+    this.hand.push(card);
+  }
+
   /**
    * Returns current ID
    */
