@@ -1,29 +1,31 @@
 import Table from '@/Table';
-import GameState from '@/GameState';
 import Player from '@/Player';
 import Debug from '@/Debug';
 import { ObservableDictionary } from '@emobe/ts-collections';
 import { Croupier } from 'croupier';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { EventEmitter } from 'events';
+import State, { GameState } from '@/GameState';
 
 type PlayerCollection = ObservableDictionary<string, Player>;
 
-export default abstract class Game<T extends Table> extends EventEmitter {
-  public state$: Observable<GameState>;
-
+export default abstract class Game<T extends Table> {
   private dealer = new Croupier();
   private players = new ObservableDictionary<string, Player>([]);
   private table: Table;
-  private state = new BehaviorSubject<GameState>(GameState.Initialising);
+  private state: State = new State();
   private startOnCount: number;
   private logger = Debug;
 
   constructor(table: new () => T, startOn: number) {
-    super();
+    this.dealer.createDeck();
     this.table = new table();
     this.startOnCount = startOn;
     this.players.items$.subscribe(v => this.userCountCheck());
+    this.state.current$.subscribe(state => {
+      if (state === GameState.Dealing) {
+        this.dealCards(5);
+      }
+    });
   }
 
   public preDeal(cb: (croupier: Croupier) => void) {
@@ -47,7 +49,7 @@ export default abstract class Game<T extends Table> extends EventEmitter {
    * Returns the game state;
    */
   public get State(): GameState {
-    return this.state.value;
+    return this.state.current;
   }
 
   /**
@@ -56,29 +58,26 @@ export default abstract class Game<T extends Table> extends EventEmitter {
    */
   private userCountCheck() {
     if (this.players.count() >= this.startOnCount) {
-      this.emit('deal', this.dealer);
-      this.updateState(GameState.Dealing);
+      this.state.change(GameState.Dealing);
     }
   }
 
   private dealCards(amount: number) {
-    this.players.Items.forEach(player => {
-      player.give(this.dealer.take(1));
-    });
-  }
-
-  private updateState(value: GameState) {
-    this.state.next(value);
-  }
-
-  private handleStates(state: GameState) {
-    switch (state) {
-      case GameState.Dealing:
-        this.onDealing(state);
+    for (let i = 0; i <= amount; i++) {
+      this.players.Items.forEach(player => {
+        console.log(player);
+        player.give(this.dealer.take(1));
+      });
     }
   }
 
   private onDealing(state: GameState) {
     this.logger.debug('dealing');
+  }
+
+  private play() {
+    this.state.current$.subscribe(state => {
+      while (state !== GameState.End) {}
+    });
   }
 }

@@ -37,8 +37,5 @@ test('Game should deal when player count of 2 has reached', t => {
   const game = new NewGame();
   game.add('test', new Player());
   game.add('ey', new Player());
-  game.on('deal', dealer => {
-    t.assert(true);
-    t.end();
-  });
+  t.end();
 });

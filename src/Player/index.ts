@@ -4,7 +4,7 @@ import nanoid from 'nanoid';
 export default class Player {
   private name: string;
   private id: string;
-  private hand: Card[];
+  private hand: Card[] = [];
 
   /**
    * Creates a player
@@ -25,8 +25,8 @@ export default class Player {
     return this.hand;
   }
 
-  public give(card: Card) {
-    this.hand.push(card);
+  public give(card: Card[]) {
+    this.hand.push(...card);
   }
 
   /**
