@@ -6,7 +6,8 @@ import { Croupier } from 'croupier';
 import { BehaviorSubject, Observable } from 'rxjs';
 import State, { GameState } from '@/GameState';
 
-type PlayerCollection = ObservableDictionary<string, Player>;
+export type PlayerCollection = ObservableDictionary<string, Player>;
+export type TurnList = Player[];
 
 export default abstract class Game<T extends Table> {
   private dealer = new Croupier();
@@ -15,21 +16,28 @@ export default abstract class Game<T extends Table> {
   private state: State = new State();
   private startOnCount: number;
   private logger = Debug;
+  private dealAmount: number;
+  public playing: Function;
 
-  constructor(table: new () => T, startOn: number) {
+  /**
+   * Abstract class to create Games with
+   * @param table Type of Table to use
+   * @param dealAmount Amount of cards to deal per player
+   * @param startOn Number of players to wait for before starting the game
+   */
+  constructor(table: new () => T, dealAmount: number, startOn: number) {
     this.dealer.createDeck();
     this.table = new table();
     this.startOnCount = startOn;
+    this.dealAmount = dealAmount;
     this.players.items$.subscribe(v => this.userCountCheck());
     this.state.current$.subscribe(state => {
       if (state === GameState.Dealing) {
-        this.dealCards(2);
-      }
+        this.dealCards();
+      } // else if (state === GameState.Playing) {
+      // this.play();
+      //}
     });
-  }
-
-  public preDeal(cb: (croupier: Croupier) => void) {
-    cb(this.dealer);
   }
 
   /**
@@ -62,12 +70,13 @@ export default abstract class Game<T extends Table> {
     }
   }
 
-  private dealCards(amount: number) {
-    for (let i = 0; i !== amount; i++) {
+  private dealCards() {
+    for (let i = 0; i !== this.dealAmount; i++) {
       this.players.Items.forEach(player => {
         player.give(this.dealer.take(1));
       });
     }
+    this.state.change(GameState.Playing);
   }
 
   private onDealing(state: GameState) {

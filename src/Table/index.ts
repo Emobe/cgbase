@@ -2,7 +2,7 @@ import { Deck } from 'croupier';
 import Player from '@/Player';
 import { Dictionary } from '@emobe/ts-collections';
 
-type Seats = Dictionary<number, Player>;
+export type Seats = Dictionary<number, Player>;
 
 export default class Table {
   private seats: Seats = new Dictionary<number, Player>([]);

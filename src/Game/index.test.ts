@@ -13,7 +13,7 @@ class TestTable extends Table {
 // tslint:disable-next-line: max-classes-per-file
 class NewGame extends Game<TestTable> {
   constructor() {
-    super(TestTable, 2);
+    super(TestTable, 2, 2);
   }
 }
 
