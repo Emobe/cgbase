@@ -1,10 +1,11 @@
 import { Deck } from 'croupier';
 import Player from '@/Player';
+import { Dictionary } from '@emobe/ts-collections';
 
-type Seats = Map<number, Player>;
+type Seats = Dictionary<number, Player>;
 
 export default class Table {
-  private seats: Seats = new Map<number, Player>();
+  private seats: Seats = new Dictionary<number, Player>([]);
   private maxPlayers: number;
 
   constructor(maxPlayers: number, ...players: Player[]) {
@@ -13,18 +14,12 @@ export default class Table {
 
   public addPlayer(player: Player, seat: number = 0) {
     if (seat <= this.maxPlayers) {
-      this.seats.set(seat, player);
+      this.seats.add(seat, player);
     }
   }
 
-  //  public deal() { // TODO circular dealing
-  //    this.seats.forEach(seat => {
-  //      // players.Hand = this.deck.take(2);
-  //    });
-  //  }
-
   get isFull(): boolean {
-    return this.maxPlayers === this.seats.size;
+    return this.maxPlayers === this.seats.Items.size;
   }
 
   get Players() {
