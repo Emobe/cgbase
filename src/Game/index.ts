@@ -23,7 +23,7 @@ export default abstract class Game<T extends Table> {
     this.players.items$.subscribe(v => this.userCountCheck());
     this.state.current$.subscribe(state => {
       if (state === GameState.Dealing) {
-        this.dealCards(5);
+        this.dealCards(2);
       }
     });
   }
@@ -63,9 +63,8 @@ export default abstract class Game<T extends Table> {
   }
 
   private dealCards(amount: number) {
-    for (let i = 0; i <= amount; i++) {
+    for (let i = 0; i !== amount; i++) {
       this.players.Items.forEach(player => {
-        console.log(player);
         player.give(this.dealer.take(1));
       });
     }

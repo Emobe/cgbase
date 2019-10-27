@@ -35,7 +35,15 @@ test('Game.add should add player to game', t => {
 
 test('Game should deal when player count of 2 has reached', t => {
   const game = new NewGame();
+  const expected = 2;
   game.add('test', new Player());
   game.add('ey', new Player());
+  game.Players.forEach(player => {
+    t.deepEqual(
+      player.Hand.length,
+      2,
+      `Player has ${expected} amount of cards`
+    );
+  });
   t.end();
 });
